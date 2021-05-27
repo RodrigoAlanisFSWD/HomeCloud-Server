@@ -25,9 +25,10 @@ func main() {
 		return c.String(200, "Welcome To HomeCloud Server")
 	})
 
-	api := e.Group("/api/")
+	api := e.Group("/api")
 
 	routers.AuthRouter(api)
+	routers.UserRouter(api)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

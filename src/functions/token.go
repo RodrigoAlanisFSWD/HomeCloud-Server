@@ -8,19 +8,19 @@ import (
 )
 
 func CreateToken(user models.User) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{})
+	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = user.ID
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
-	return token.SignedString([]byte("string"))
+	return token.SignedString([]byte("secret"))
 }
 
 func CreateRefresh(user models.User) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{})
+	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = user.ID
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 365).Unix()
 
-	return token.SignedString([]byte("string"))
+	return token.SignedString([]byte("secret"))
 }
