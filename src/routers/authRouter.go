@@ -7,8 +7,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func AuthRouter(e *echo.Group) {
-	auth := e.Group("/auth")
+func AuthRouter(api *echo.Group) {
+	auth := api.Group("/auth")
 
 	auth.POST("/register", controllers.Register)
 	auth.POST("/login", controllers.Login)

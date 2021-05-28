@@ -3,9 +3,10 @@ package controllers
 import (
 	"HomeCloud/src/database/models"
 	"HomeCloud/src/database/services"
-	funtions "HomeCloud/src/functions"
+	"HomeCloud/src/functions"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
@@ -21,8 +22,7 @@ func Register(c echo.Context) error {
 		return err
 	}
 
-	err, user := services.FindByUsername(data)
-	fmt.Println(user)
+	_, user := services.FindByUsername(data)
 
 	if user.Username == data.Username {
 		return c.JSON(200, echo.Map{"res": 101, "auth": false, "token": ""})
@@ -44,19 +44,21 @@ func Register(c echo.Context) error {
 		return err
 	}
 
-	signedToken, err := funtions.CreateToken(user)
+	signedToken, err := functions.CreateToken(data)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
 	}
 
-	refreshToken, err := funtions.CreateRefresh(user)
+	refreshToken, err := functions.CreateRefresh(data)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
 	}
+
+	os.Mkdir("cloud/"+data.Username, 0777)
 
 	return c.JSON(200, echo.Map{"res": 100, "auth": true, "token": signedToken, "refresh": refreshToken})
 }
@@ -80,13 +82,13 @@ func Login(c echo.Context) error {
 		return c.JSON(200, echo.Map{"res": 102, "auth": false, "token": ""})
 	}
 
-	signedToken, err := funtions.CreateToken(user)
+	signedToken, err := functions.CreateToken(user)
 
 	if err != nil {
 		return err
 	}
 
-	refreshToken, err := funtions.CreateRefresh(user)
+	refreshToken, err := functions.CreateRefresh(user)
 
 	if err != nil {
 		return err
@@ -102,7 +104,7 @@ func Refresh(c echo.Context) error {
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 
-	signedToken, err := funtions.CreateToken(models.User{ID: objectId})
+	signedToken, err := functions.CreateToken(models.User{ID: objectId})
 
 	if err != nil {
 		return err

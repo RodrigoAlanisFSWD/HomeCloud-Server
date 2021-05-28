@@ -1,4 +1,4 @@
-package funtions
+package functions
 
 import (
 	"HomeCloud/src/database/models"

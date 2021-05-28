@@ -29,6 +29,7 @@ func main() {
 
 	routers.AuthRouter(api)
 	routers.UserRouter(api)
+	routers.CloudRouter(api)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

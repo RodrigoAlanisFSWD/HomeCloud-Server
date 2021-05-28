@@ -19,7 +19,7 @@ func Profile(c echo.Context) error {
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 
-	err, user := services.FindById(objectId)
+	user, err := services.FindById(objectId)
 
 	if err != nil {
 		fmt.Println(err.Error())

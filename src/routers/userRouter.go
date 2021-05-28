@@ -7,8 +7,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func UserRouter(e *echo.Group) {
-	user := e.Group("/user")
+func UserRouter(api *echo.Group) {
+	user := api.Group("/user")
 
 	user.Use(middleware.JWTWithConfig(middleware.JWTConfig{SigningKey: []byte("secret")}))
 

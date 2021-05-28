@@ -21,16 +21,16 @@ func FindByUsername(data models.User) (error, models.User) {
 	return nil, user
 }
 
-func FindById(id primitive.ObjectID) (error, models.User) {
+func FindById(id primitive.ObjectID) (models.User, error) {
 	var user models.User
 
 	err := database.DB.Collection("users").FindOne(context.Background(), bson.M{"_id": id}).Decode(&user)
 
 	if err != nil {
-		return err, user
+		return user, nil
 	}
 
-	return nil, user
+	return user, nil
 }
 
 func CreateUser(data models.User) error {
@@ -53,7 +53,9 @@ func UpdateAvatar(id string, name string) error {
 		return err
 	}
 
-	err = database.DB.Collection("users").FindOneAndUpdate(context.Background(), bson.M{"_id": objectId}, bson.M{"$set": bson.M{"avatar": "http://localhost:3000/assets/" + name}}).Decode(&user)
+	update := bson.M{"$set": bson.M{"avatar": "http://localhost:3000/assets/" + name}}
+
+	err = database.DB.Collection("users").FindOneAndUpdate(context.Background(), bson.M{"_id": objectId}, update).Decode(&user)
 
 	if err != nil {
 		return err
