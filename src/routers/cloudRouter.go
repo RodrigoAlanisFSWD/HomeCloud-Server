@@ -12,5 +12,8 @@ func CloudRouter(api *echo.Group) {
 
 	cloud.Use(middleware.JWTWithConfig(middleware.JWTConfig{SigningKey: []byte("secret")}))
 
-	cloud.POST("/upload/:path?", controllers.UploadFile)
+	cloud.POST("/upload/:path", controllers.UploadFile)
+	cloud.POST("/mkdir/:path", controllers.CreateDir)
+	cloud.DELETE("/rm/:path", controllers.Delete)
+	cloud.GET("/read/:path", controllers.Read)
 }
