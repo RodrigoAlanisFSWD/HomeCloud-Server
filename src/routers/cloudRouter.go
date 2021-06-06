@@ -14,6 +14,7 @@ func CloudRouter(api *echo.Group) {
 
 	cloud.POST("/upload/:path", controllers.UploadFile)
 	cloud.POST("/mkdir/:path", controllers.CreateDir)
-	cloud.DELETE("/rm/:path", controllers.Delete)
+	cloud.DELETE("/rm/:name/:type/:path", controllers.Delete)
 	cloud.GET("/read/:path", controllers.Read)
+	cloud.GET("/download/:name/:path", controllers.Download)
 }

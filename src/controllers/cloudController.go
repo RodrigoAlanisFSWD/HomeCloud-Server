@@ -43,13 +43,6 @@ func UploadFile(c echo.Context) error {
 
 	files := form.File["file"]
 
-	var body map[string]string
-
-	if err := json.NewDecoder(c.Request().Body).Decode(&body); err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-
 	for _, file := range files {
 		formatedPath := functions.FormatPath(c.Param("path"))
 
@@ -146,17 +139,15 @@ func Delete(c echo.Context) error {
 		return err
 	}
 
-	var body map[string]string
-
-	if err := json.NewDecoder(c.Request().Body).Decode(&body); err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-
 	formatedPath := functions.FormatPath(c.Param("path"))
-	newPath := path.Join("cloud/" + user.Username + "/" + formatedPath + "/" + body["name"])
+	newPath := path.Join("cloud/" + user.Username + "/" + formatedPath + "/" + c.Param("name"))
+	fmt.Println(newPath)
 
-	err = os.Remove(newPath)
+	if c.Param("type") == "dir" {
+		err = os.RemoveAll(newPath)
+	} else {
+		err = os.Remove(newPath)
+	}
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -203,4 +194,31 @@ func Read(c echo.Context) error {
 	}
 
 	return c.JSON(200, echo.Map{"res": 100, "auth": true, "data": files})
+}
+
+func Download(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(jwt.MapClaims)
+	fmt.Println(claims)
+	id := claims["id"].(string)
+
+	userId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	user, err := services.FindById(userId)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	formatedPath := functions.FormatPath(c.Param("path"))
+	newPath := path.Join("cloud/" + user.Username + "/" + formatedPath + "/")
+	finalPath := path.Join(newPath + "/" + c.Param("name"))
+
+	return c.File(finalPath)
 }

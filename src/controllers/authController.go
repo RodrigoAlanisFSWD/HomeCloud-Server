@@ -44,14 +44,16 @@ func Register(c echo.Context) error {
 		return err
 	}
 
-	signedToken, err := functions.CreateToken(data)
+	_, user = services.FindByUsername(data)
+
+	signedToken, err := functions.CreateToken(user)
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
 	}
 
-	refreshToken, err := functions.CreateRefresh(data)
+	refreshToken, err := functions.CreateRefresh(user)
 
 	if err != nil {
 		fmt.Println(err.Error())

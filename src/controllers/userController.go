@@ -35,6 +35,8 @@ func Avatar(c echo.Context) error {
 	fmt.Println(claims)
 	id := claims["id"].(string)
 
+	fmt.Println(id)
+
 	file, err := c.FormFile("avatar")
 
 	if err != nil {

@@ -53,7 +53,7 @@ func UpdateAvatar(id string, name string) error {
 		return err
 	}
 
-	update := bson.M{"$set": bson.M{"avatar": "http://localhost:3000/assets/" + name}}
+	update := bson.M{"$set": bson.M{"avatar": "http://localhost:5000/assets/" + name}}
 
 	err = database.DB.Collection("users").FindOneAndUpdate(context.Background(), bson.M{"_id": objectId}, update).Decode(&user)
 

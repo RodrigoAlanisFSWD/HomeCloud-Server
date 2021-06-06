@@ -5,8 +5,10 @@ import (
 	"HomeCloud/src/routers"
 	"fmt"
 	"log"
+	"path"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -21,6 +23,16 @@ func main() {
 
 	e := echo.New()
 
+	e.Use(middleware.Logger())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+	}))
+
+	e.GET("assets/:file", func(c echo.Context) error {
+		file := path.Join("uploads/" + c.Param("file"))
+		return c.File(file)
+	})
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(200, "Welcome To HomeCloud Server")
 	})
@@ -31,5 +43,5 @@ func main() {
 	routers.UserRouter(api)
 	routers.CloudRouter(api)
 
-	e.Logger.Fatal(e.Start(":3000"))
+	e.Logger.Fatal(e.Start(":5000"))
 }
